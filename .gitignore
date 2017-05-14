@@ -1,0 +1,5 @@
+venv/
+*.pyc
+*.pyo
+*.egg-ignore
+*.egg-info
