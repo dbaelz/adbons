@@ -6,12 +6,12 @@ KEY_DEFAULT = "default"
 
 
 def read_value(section, key):
-    with open(".adbons.yml", 'r') as ymlfile:
-        config = yaml.safe_load(ymlfile)
     try:
+        with open(".adbons.yml", 'r') as ymlfile:
+            config = yaml.safe_load(ymlfile)
         return config[section][key]
     except:
-        return ""
+        pass
 
 
 def write_value(section, key, value):
