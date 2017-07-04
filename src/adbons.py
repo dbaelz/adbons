@@ -2,23 +2,25 @@ import subprocess
 
 import click
 
-from .helper import write_value_to_config
+from .config import write_value
+from .config import (SECTION_APP, SECTION_DEVICE, KEY_DEFAULT)
 
 
 @click.group(invoke_without_command=True)
 @click.pass_context
-@click.option("--select-app", type=click.STRING)
-@click.option("--select-device", type=click.STRING)
-def cli(ctx, select_device, select_app):
+@click.option("-a", "--set-app", type=click.STRING,
+              help="Set a default app id")
+@click.option("-d", "--set-device", type=click.STRING,
+              help="Set a default device id")
+def cli(ctx, set_app, set_device):
     """A wrapper for the adb tool. It's just adb on steroids."""
     if ctx.invoked_subcommand is None:
-        if select_app:
-            write_value_to_config("app", "selected", select_app)
-        if select_device:
+        if set_app:
+            write_value(SECTION_APP, KEY_DEFAULT, set_app)
+        if set_device:
             # TODO: Check if the selected device is attached
             # TODO: Only add it in this case or show prompt
-            click.echo(write_value_to_config("device", "selected",
-                                             select_device))
+            write_value(SECTION_DEVICE, KEY_DEFAULT, set_device)
     else:
         ctx.invoked_subcommand
 

@@ -1,19 +1,11 @@
-import subprocess
 import yaml
 
-
-def get_device_ids():
-    output = subprocess.check_output(["adb", "devices"]).splitlines()
-    # Delete header text and empty last line
-    del output[0]
-    del output[len(output) - 1]
-    lines = []
-    for line in output:
-        lines.append(line.split("\t")[0].strip())
-    return lines
+SECTION_APP = "app"
+SECTION_DEVICE = "device"
+KEY_DEFAULT = "default"
 
 
-def read_value_from_config(section, key):
+def read_value(section, key):
     with open(".adbons.yml", 'r') as ymlfile:
         config = yaml.safe_load(ymlfile)
     try:
@@ -22,7 +14,7 @@ def read_value_from_config(section, key):
         return ""
 
 
-def write_value_to_config(section, key, value):
+def write_value(section, key, value):
     try:
         with open(".adbons.yml", 'r+') as ymlfile:
             config = yaml.safe_load(ymlfile)
@@ -30,7 +22,6 @@ def write_value_to_config(section, key, value):
             config[section] = {}
         config[section][key] = value
     except:
-        print("except")
         config = {}
         config[section] = {}
         config[section][key] = value
