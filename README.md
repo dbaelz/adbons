@@ -3,7 +3,7 @@ A wrapper for the [Android adb tool](https://developer.android.com/studio/comman
 
 Development
 -------------
-adbons is a Python 3 command line tool. Any suggestions, bug reports or pull requests are very much appreciated.
+adbons is a Python 3.5 (and above) command line tool. Any suggestions, bug reports or pull requests are very much appreciated.
 
 License
 -------------
