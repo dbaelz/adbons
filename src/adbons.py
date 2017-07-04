@@ -1,17 +1,16 @@
-import subprocess
-
 import click
 
-from .config import write_value
+from .adb import list_devices, kill_app
+from .config import read_value, write_value
 from .config import (SECTION_APP, SECTION_DEVICE, KEY_DEFAULT)
 
 
 @click.group(invoke_without_command=True)
-@click.pass_context
 @click.option("-a", "--set-app", type=click.STRING,
-              help="Set a default app id")
+              help="Set a default app id.")
 @click.option("-d", "--set-device", type=click.STRING,
-              help="Set a default device id")
+              help="Set a default device id.")
+@click.pass_context
 def cli(ctx, set_app, set_device):
     """A wrapper for the adb tool. It's just adb on steroids."""
     if ctx.invoked_subcommand is None:
@@ -27,5 +26,22 @@ def cli(ctx, set_app, set_device):
 
 @cli.command("devices")
 def list():
-    """Lists all attached devices"""
-    subprocess.call(["adb", "devices"])
+    """List all attached devices"""
+    list_devices()
+
+
+@cli.command()
+@click.option("-a", "--app", type=click.STRING, help="Use this app id.")
+@click.option("-d", "--device", type=click.STRING, help="Use this device id.")
+@click.pass_context
+def kill(ctx, app, device):
+    """Kill (force-stop) an app."""
+    if app is None:
+        app = read_value(SECTION_APP, KEY_DEFAULT)
+    if device is None:
+        device = read_value(SECTION_DEVICE, KEY_DEFAULT)
+
+    if app is None:
+        click.echo("error: The app id is required")
+        return
+    kill_app(app, device)
