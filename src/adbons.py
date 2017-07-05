@@ -1,7 +1,7 @@
 import click
 
 from .adb import list_devices, kill_app, clear_app_data
-from .config import read_value, write_value
+from .config import read_value, write_value, clear_value
 from .config import (SECTION_APP, SECTION_DEVICE, KEY_DEFAULT)
 
 
@@ -19,8 +19,11 @@ def cli(ctx,):
               help="Set a default device id.")
 @click.option("-a", "--set-app", type=click.STRING,
               help="Set a default app id.")
+@click.option("-c", "--clear",
+              type=click.Choice([SECTION_DEVICE, SECTION_APP]),
+              help="Clear the default value.")
 @click.pass_context
-def config(ctx, use_global, set_device, set_app):
+def config(ctx, use_global, set_device, set_app, clear):
     """"Configurate adbons."""
     if set_device:
         # TODO: Check if the selected device is attached
@@ -28,6 +31,8 @@ def config(ctx, use_global, set_device, set_app):
         write_value(use_global, SECTION_DEVICE, KEY_DEFAULT, set_device)
     if set_app:
         write_value(use_global, SECTION_APP, KEY_DEFAULT, set_app)
+    if clear:
+        clear_value(use_global, clear, KEY_DEFAULT)
 
 
 @cli.command("devices")

@@ -45,6 +45,23 @@ def write_value(use_global, section, key, value):
         yaml.dump(config, ymlfile, default_flow_style=False)
 
 
+def clear_value(use_global, section, key):
+    if not os.path.exists(__filename(use_global)):
+        # File doesn't exist, so we skip the clear
+        return
+
+    try:
+        with open(__filename(use_global, True), 'r+') as ymlfile:
+            config = yaml.safe_load(ymlfile)
+            print(config)
+            del config[section][key]
+    except:
+        return
+
+    with open(__filename(use_global, True), 'w') as ymlfile:
+        yaml.dump(config, ymlfile, default_flow_style=False)
+
+
 def __filename(use_global, create_path=False):
     filename = ""
     if use_global:
