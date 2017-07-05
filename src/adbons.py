@@ -14,7 +14,7 @@ def cli(ctx,):
 
 @cli.command()
 @click.option("use_global", "-g", "--global", is_flag=True,
-              help="Use the global config (~/.adbons/.adbons.yml)")
+              help="Use the global config (~/.adbons/.adbons.yml).")
 @click.option("-a", "--set-app", type=click.STRING,
               help="Set a default app id.")
 @click.option("-d", "--set-device", type=click.STRING,
@@ -48,6 +48,6 @@ def kill(ctx, app, device):
         device = read_value(SECTION_DEVICE, KEY_DEFAULT)
 
     if app is None:
-        raise click.NoSuchOption("app", "app id is required")
+        raise click.NoSuchOption("app", "app id is required.")
 
     kill_app(app, device)
