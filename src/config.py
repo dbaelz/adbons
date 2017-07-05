@@ -53,7 +53,6 @@ def clear_value(use_global, section, key):
     try:
         with open(__filename(use_global, True), 'r+') as ymlfile:
             config = yaml.safe_load(ymlfile)
-            print(config)
             del config[section][key]
     except:
         return

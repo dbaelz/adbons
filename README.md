@@ -6,7 +6,7 @@ Currently only some basic features are provided. These features should simplify 
 
 Example workflow to kill an app when multiple devices are connected:
 * A default device and app id is set in the config. This information is saved in a `.adbons.yml` file. The file is either stored local (working dir) or global (`~/.adbons/`).
-* Execute the kill command. With saved values, the app is just killed with `adbons kill` instead of `adb -d <device> shell am force-stop <app id>`.
+* Execute the kill command. With saved values, the app is just killed with `adbons kill` instead of `adb -s <device> shell am force-stop <app id>`.
 
 
 ## Usage
