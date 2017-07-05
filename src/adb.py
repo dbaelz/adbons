@@ -5,6 +5,16 @@ ADB_COMMAND_DEVICES = "devices"
 ADB_COMMAND_KILL = ["shell", "am", "force-stop"]
 
 
+def __command(device, app, adb_command):
+    command = [ADB_COMMAND]
+    if device:
+        command.append("-s")
+        command.append(device)
+    command.extend(adb_command)
+    command.append(app)
+    return command
+
+
 def list_devices():
     subprocess.run([ADB_COMMAND, ADB_COMMAND_DEVICES])
 
@@ -23,10 +33,4 @@ def get_device_ids():
 
 
 def kill_app(device, app):
-    command = [ADB_COMMAND]
-    if device:
-        command.append("-s")
-        command.append(device)
-    command.extend(ADB_COMMAND_KILL)
-    command.append(app)
-    subprocess.run(command)
+    subprocess.run(__command(device, app, ADB_COMMAND_KILL))
