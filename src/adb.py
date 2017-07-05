@@ -22,7 +22,7 @@ def get_device_ids():
     return lines
 
 
-def kill_app(app, device):
+def kill_app(device, app):
     command = [ADB_COMMAND]
     if device:
         command.append("-s")
