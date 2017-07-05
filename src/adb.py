@@ -3,6 +3,7 @@ import subprocess
 ADB_COMMAND = "adb"
 ADB_COMMAND_DEVICES = "devices"
 ADB_COMMAND_KILL = ["shell", "am", "force-stop"]
+ADB_COMMAND_CLEAR_APP_DATA = ["shell", "pm", "clear"]
 
 
 def __command(device, app, adb_command):
@@ -34,3 +35,7 @@ def get_device_ids():
 
 def kill_app(device, app):
     subprocess.run(__command(device, app, ADB_COMMAND_KILL))
+
+
+def clear_app_data(device, app):
+    subprocess.run(__command(device, app, ADB_COMMAND_CLEAR_APP_DATA))

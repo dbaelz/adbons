@@ -1,6 +1,6 @@
 import click
 
-from .adb import list_devices, kill_app
+from .adb import list_devices, kill_app, clear_app_data
 from .config import read_value, write_value
 from .config import (SECTION_APP, SECTION_DEVICE, KEY_DEFAULT)
 
@@ -50,3 +50,19 @@ def kill(ctx, device, app):
             raise click.NoSuchOption("app", "app id is required.")
 
     kill_app(device, app)
+
+
+@cli.command()
+@click.option("-d", "--device", type=click.STRING, help="Use this device id.")
+@click.option("-a", "--app", type=click.STRING, help="Use this app id.")
+@click.pass_context
+def clear(ctx, device, app):
+    """Clear the app data."""
+    if device is None:
+        device = read_value(SECTION_DEVICE, KEY_DEFAULT)
+    if app is None:
+        app = read_value(SECTION_APP, KEY_DEFAULT)
+        if app is None:
+            raise click.NoSuchOption("app", "app id is required.")
+
+    clear_app_data(device, app)
