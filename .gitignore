@@ -3,3 +3,4 @@ venv/
 *.pyo
 *.egg-ignore
 *.egg-info
+*.adbons.yml
