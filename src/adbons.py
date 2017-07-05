@@ -13,19 +13,21 @@ def cli(ctx,):
 
 
 @cli.command()
+@click.option("use_global", "-g", "--global", is_flag=True,
+              help="Use the global config (~/.adbons/.adbons.yml)")
 @click.option("-a", "--set-app", type=click.STRING,
               help="Set a default app id.")
 @click.option("-d", "--set-device", type=click.STRING,
               help="Set a default device id.")
 @click.pass_context
-def config(ctx, set_app, set_device):
-    """Configure adbons"""
+def config(ctx, use_global, set_app, set_device):
+    """Set persistent configurations."""
     if set_app:
-        write_value(SECTION_APP, KEY_DEFAULT, set_app)
+        write_value(use_global, SECTION_APP, KEY_DEFAULT, set_app)
     if set_device:
         # TODO: Check if the selected device is attached
         # TODO: Only add it in this case or show prompt
-        write_value(SECTION_DEVICE, KEY_DEFAULT, set_device)
+        write_value(use_global, SECTION_DEVICE, KEY_DEFAULT, set_device)
 
 
 @cli.command("devices")
@@ -46,6 +48,6 @@ def kill(ctx, app, device):
         device = read_value(SECTION_DEVICE, KEY_DEFAULT)
 
     if app is None:
-        click.echo("error: The app id is required")
-        return
+        raise click.NoSuchOption("app", "app id is required")
+
     kill_app(app, device)
