@@ -21,7 +21,7 @@ def cli(ctx,):
               help="Set a default app id.")
 @click.pass_context
 def config(ctx, use_global, set_device, set_app):
-    """Set persistent configurations."""
+    """"Configurate adbons."""
     if set_device:
         # TODO: Check if the selected device is attached
         # TODO: Only add it in this case or show prompt
