@@ -1,13 +1,13 @@
 import click
 
-from .adb import list_devices, kill_app, clear_app_data
+from .adb import Adb
 from .config import read_value, write_value, clear_value
 from .config import (SECTION_APP, SECTION_DEVICE, KEY_DEFAULT)
 
 
 @click.group(invoke_without_command=True)
 @click.pass_context
-def cli(ctx,):
+def cli(ctx):
     """A wrapper for the adb tool. It's just adb on steroids."""
     ctx.invoked_subcommand
 
@@ -38,7 +38,7 @@ def config(ctx, use_global, set_device, set_app, clear):
 @cli.command("devices")
 def list():
     """List all attached devices."""
-    list_devices()
+    Adb.list_devices()
 
 
 @cli.command()
@@ -54,7 +54,17 @@ def kill(ctx, device, app):
         if app is None:
             raise click.NoSuchOption("app", "app id is required.")
 
-    kill_app(device, app)
+    Adb.kill_app(device, app)
+
+
+@cli.command("kill-all")
+@click.option("-d", "--device", type=click.STRING, help="Use this device id.")
+@click.pass_context
+def kill_all(ctx, device):
+    """Kill all background processes."""
+    if device is None:
+        device = read_value(SECTION_DEVICE, KEY_DEFAULT)
+    Adb.kill_all(device)
 
 
 @cli.command()
@@ -70,4 +80,4 @@ def clear(ctx, device, app):
         if app is None:
             raise click.NoSuchOption("app", "app id is required.")
 
-    clear_app_data(device, app)
+    Adb.clear_app_data(device, app)
