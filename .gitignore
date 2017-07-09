@@ -1,6 +1,9 @@
-venv/
+build
+dist
+venv
 *.pyc
 *.pyo
 *.egg-ignore
 *.egg-info
 *.adbons.yml
+*.pypirc
