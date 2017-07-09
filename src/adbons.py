@@ -1,8 +1,7 @@
 import click
 
 from .adb import Adb
-from .config import read_value, write_value, clear_value
-from .config import (SECTION_APP, SECTION_DEVICE, KEY_DEFAULT)
+from .config import Config
 
 
 @click.group(invoke_without_command=True)
@@ -20,17 +19,19 @@ def cli(ctx):
 @click.option("-a", "--set-app", type=click.STRING,
               help="Set a default app id.")
 @click.option("-c", "--clear",
-              type=click.Choice([SECTION_DEVICE, SECTION_APP]),
+              type=click.Choice([Config.SECTION_DEVICE, Config.SECTION_APP]),
               help="Clear the default value.")
 @click.pass_context
 def config(ctx, use_global, set_device, set_app, clear):
     """"Configurate adbons."""
     if set_device:
-        write_value(use_global, SECTION_DEVICE, KEY_DEFAULT, set_device)
+        Config.write_value(use_global, Config.SECTION_DEVICE,
+                           Config.KEY_DEFAULT, set_device)
     if set_app:
-        write_value(use_global, SECTION_APP, KEY_DEFAULT, set_app)
+        Config.write_value(use_global, Config.SECTION_APP,
+                           Config.KEY_DEFAULT, set_app)
     if clear:
-        clear_value(use_global, clear, KEY_DEFAULT)
+        Config.clear_value(use_global, clear, Config.KEY_DEFAULT)
 
 
 @cli.command("devices")
@@ -46,12 +47,13 @@ def list():
 def kill(ctx, device, app):
     """Kill (force-stop) an app."""
     if device is None:
-        device = read_value(SECTION_DEVICE, KEY_DEFAULT)
+        device = Config.read_value(Config.SECTION_DEVICE,
+                                   Config.KEY_DEFAULT)
     if app is None:
-        app = read_value(SECTION_APP, KEY_DEFAULT)
+        app = Config.read_value(Config.SECTION_APP,
+                                Config.KEY_DEFAULT)
         if app is None:
             raise click.NoSuchOption("app", "app id is required.")
-
     Adb.kill_app(device, app)
 
 
@@ -61,7 +63,8 @@ def kill(ctx, device, app):
 def kill_all(ctx, device):
     """Kill all background processes."""
     if device is None:
-        device = read_value(SECTION_DEVICE, KEY_DEFAULT)
+        device = Config.read_value(Config.SECTION_DEVICE,
+                                   Config.KEY_DEFAULT)
     Adb.kill_all(device)
 
 
@@ -72,10 +75,11 @@ def kill_all(ctx, device):
 def clear(ctx, device, app):
     """Clear the app data."""
     if device is None:
-        device = read_value(SECTION_DEVICE, KEY_DEFAULT)
+        device = Config.read_value(Config.SECTION_DEVICE,
+                                   Config.KEY_DEFAULT)
     if app is None:
-        app = read_value(SECTION_APP, KEY_DEFAULT)
+        app = Config.read_value(Config.SECTION_APP,
+                                Config.KEY_DEFAULT)
         if app is None:
             raise click.NoSuchOption("app", "app id is required.")
-
     Adb.clear_app_data(device, app)
