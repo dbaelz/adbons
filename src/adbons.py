@@ -26,8 +26,6 @@ def cli(ctx):
 def config(ctx, use_global, set_device, set_app, clear):
     """"Configurate adbons."""
     if set_device:
-        # TODO: Check if the selected device is attached
-        # TODO: Only add it in this case or show prompt
         write_value(use_global, SECTION_DEVICE, KEY_DEFAULT, set_device)
     if set_app:
         write_value(use_global, SECTION_APP, KEY_DEFAULT, set_app)
