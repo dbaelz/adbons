@@ -23,6 +23,12 @@ class Adb:
         return command
 
     @staticmethod
+    def adb_command(command):
+        command = list(command)
+        command.insert(0, Adb.ADB_COMMAND)
+        subprocess.run(command)
+
+    @staticmethod
     def list_devices():
         subprocess.run([Adb.ADB_COMMAND, Adb.ADB_COMMAND_DEVICES])
 

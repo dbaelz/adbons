@@ -34,6 +34,16 @@ def config(ctx, use_global, set_device, set_app, clear):
         Config.clear_value(use_global, clear, Config.KEY_DEFAULT)
 
 
+@cli.command("adb", context_settings=dict(
+    ignore_unknown_options=True,
+))
+@click.argument("command", nargs=-1)
+@click.pass_context
+def adb_command(ctx, command):
+    """Executes the adb give command."""
+    Adb.adb_command(command)
+
+
 @cli.command("devices")
 def list():
     """List all attached devices."""
