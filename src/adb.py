@@ -19,7 +19,6 @@ class Adb:
         command.extend(adb_command)
         if app:
             command.append(app)
-        print(command)
         return command
 
     @staticmethod
