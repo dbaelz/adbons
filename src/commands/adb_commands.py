@@ -74,3 +74,15 @@ def input_text(ctx, device, source, text):
     """Inputs the text."""
     device = __get_id(device, Config.SECTION_DEVICE, Config.KEY_DEFAULT)
     Adb.input_text(device, source, text)
+
+
+@click.command("key")
+@click.option("-d", "--device", type=click.STRING, help="Use this device id.")
+@click.argument("keyevent")
+@click.pass_context
+def input_keyevent(ctx, device, keyevent):
+    """Inputs the keyevent (value or constant).
+    See also
+    https://developer.android.com/reference/android/view/KeyEvent.html"""
+    device = __get_id(device, Config.SECTION_DEVICE, Config.KEY_DEFAULT)
+    Adb.input_keyevent(device, keyevent)

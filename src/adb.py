@@ -73,3 +73,10 @@ class Adb:
         command.append("text")
         command.append(text)
         subprocess.run(Adb.__command(device, None, command))
+
+    @staticmethod
+    def input_keyevent(device, keyevent):
+        command = Adb.ADB_COMMAND_INPUT_PREFIX
+        command.append("keyevent")
+        command.append(keyevent)
+        subprocess.run(Adb.__command(device, None, command))
