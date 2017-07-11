@@ -13,7 +13,9 @@ class Adb:
     ADB_COMMAND_CLEAR_APP_DATA = ["shell", "pm", "clear"]
 
     # input
-    ADB_COMMAND_INPUT_TEXT = ["shell", "input", "text"]
+    ADB_COMMAND_INPUT_PREFIX = ["shell", "input"]
+    ADB_INPUT_SOURCE_TOUCHSCREEN = "touchscreen"
+    ADB_INPUT_SOURCE_KEYBOARD = "keyboard"
 
     @staticmethod
     def __command(device, app, adb_command):
@@ -64,7 +66,10 @@ class Adb:
                                      Adb.ADB_COMMAND_CLEAR_APP_DATA))
 
     @staticmethod
-    def input_text(device, text):
-        command = Adb.ADB_COMMAND_INPUT_TEXT
+    def input_text(device, source, text):
+        command = Adb.ADB_COMMAND_INPUT_PREFIX
+        if source is not None:
+            command.append(source)
+        command.append("text")
         command.append(text)
         subprocess.run(Adb.__command(device, None, command))

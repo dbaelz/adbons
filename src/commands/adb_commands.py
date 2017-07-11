@@ -64,9 +64,13 @@ def clear(ctx, device, app):
 
 @click.command("text")
 @click.option("-d", "--device", type=click.STRING, help="Use this device id.")
+@click.option("-s", "--source",
+              type=click.Choice([Adb.ADB_INPUT_SOURCE_TOUCHSCREEN,
+                                 Adb.ADB_INPUT_SOURCE_KEYBOARD]),
+              help="Use this input source.")
 @click.argument("text")
 @click.pass_context
-def input_text(ctx, device, text):
+def input_text(ctx, device, source, text):
     """Inputs the text."""
     device = __get_id(device, Config.SECTION_DEVICE, Config.KEY_DEFAULT)
-    Adb.input_text(device, text)
+    Adb.input_text(device, source, text)
