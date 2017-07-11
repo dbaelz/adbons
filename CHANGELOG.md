@@ -1,6 +1,15 @@
 # Changelog
 A wrapper for the [Android adb tool](https://developer.android.com/studio/command-line/adb.html). It's just adb on steroids.
 
+## 0.1.0 (2017-07-11)
+Add more features and internal restructuring.
+
+#### Added
+- Execute every adb command with `adbons adb <ADB_COMMAND>`.
+- Input a text with `adbons text <text>`.
+- Input a key event with `adbons key <text>`.
+
+
 ## 0.0.1 (2017-07-09)
 Initial public release with a basic feature set. Still a beta version and work in progress. See [README](README.md) and `adbons --help` for further information.
 

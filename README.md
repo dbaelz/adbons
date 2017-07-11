@@ -26,7 +26,8 @@ See `adbons --help` for all currently available commands. The commands provide h
 
 
 ## Development
-adbons is a Python 3.5 (and above) command line tool. It's currenlty in the beta phase and work in progress. Any suggestions, bug reports or pull requests are very much appreciated.
+adbons is a Python 3.5 (and above) command line tool. It's still work in progress. Any suggestions, feature requests, bug reports or pull requests are very much appreciated.
+
 
 ## License
 adbons is licensed under the [BSD License](https://github.com/dbaelz/adbons/blob/master/LICENSE).
