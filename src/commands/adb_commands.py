@@ -4,6 +4,13 @@ from ..adb import Adb
 from ..config import Config
 
 
+def __get_id(option_id, section, key):
+    if option_id is None:
+        return Config.read_value(section, key)
+    else:
+        return option_id
+
+
 @click.command("adb", context_settings=dict(
     ignore_unknown_options=True,
 ))
@@ -26,14 +33,10 @@ def list_devices():
 @click.pass_context
 def kill(ctx, device, app):
     """Kills (force-stop) the app."""
-    if device is None:
-        device = Config.read_value(Config.SECTION_DEVICE,
-                                   Config.KEY_DEFAULT)
+    device = __get_id(device, Config.SECTION_DEVICE, Config.KEY_DEFAULT)
+    app = __get_id(app, Config.SECTION_APP, Config.KEY_DEFAULT)
     if app is None:
-        app = Config.read_value(Config.SECTION_APP,
-                                Config.KEY_DEFAULT)
-        if app is None:
-            raise click.NoSuchOption("app", "app id is required.")
+        raise click.NoSuchOption("app", "app id is required.")
     Adb.kill_app(device, app)
 
 
@@ -42,9 +45,7 @@ def kill(ctx, device, app):
 @click.pass_context
 def kill_all(ctx, device):
     """Kills all background processes."""
-    if device is None:
-        device = Config.read_value(Config.SECTION_DEVICE,
-                                   Config.KEY_DEFAULT)
+    device = __get_id(device, Config.SECTION_DEVICE, Config.KEY_DEFAULT)
     Adb.kill_all(device)
 
 
@@ -54,14 +55,10 @@ def kill_all(ctx, device):
 @click.pass_context
 def clear(ctx, device, app):
     """Clears the app data."""
-    if device is None:
-        device = Config.read_value(Config.SECTION_DEVICE,
-                                   Config.KEY_DEFAULT)
+    device = __get_id(device, Config.SECTION_DEVICE, Config.KEY_DEFAULT)
+    app = __get_id(app, Config.SECTION_APP, Config.KEY_DEFAULT)
     if app is None:
-        app = Config.read_value(Config.SECTION_APP,
-                                Config.KEY_DEFAULT)
-        if app is None:
-            raise click.NoSuchOption("app", "app id is required.")
+        raise click.NoSuchOption("app", "app id is required.")
     Adb.clear_app_data(device, app)
 
 
@@ -71,7 +68,5 @@ def clear(ctx, device, app):
 @click.pass_context
 def input_text(ctx, device, text):
     """Inputs the text."""
-    if device is None:
-        device = Config.read_value(Config.SECTION_DEVICE,
-                                   Config.KEY_DEFAULT)
+    device = __get_id(device, Config.SECTION_DEVICE, Config.KEY_DEFAULT)
     Adb.input_text(device, text)
