@@ -5,10 +5,15 @@ class Adb:
     ADB_COMMAND = "adb"
     ADB_COMMAND_DEVICES = "devices"
 
+    # activity manager
     ADB_COMMAND_KILL = ["shell", "am", "force-stop"]
     ADB_COMMAND_KILL_ALL = ["shell", "am", "kill-all"]
 
+    # package manager
     ADB_COMMAND_CLEAR_APP_DATA = ["shell", "pm", "clear"]
+
+    # input
+    ADB_COMMAND_INPUT_TEXT = ["shell", "input", "text"]
 
     @staticmethod
     def __command(device, app, adb_command):
@@ -57,3 +62,9 @@ class Adb:
     def clear_app_data(device, app):
         subprocess.run(Adb.__command(device, app,
                                      Adb.ADB_COMMAND_CLEAR_APP_DATA))
+
+    @staticmethod
+    def input_text(device, text):
+        command = Adb.ADB_COMMAND_INPUT_TEXT
+        command.append(text)
+        subprocess.run(Adb.__command(device, None, command))

@@ -63,3 +63,15 @@ def clear(ctx, device, app):
         if app is None:
             raise click.NoSuchOption("app", "app id is required.")
     Adb.clear_app_data(device, app)
+
+
+@click.command("text")
+@click.option("-d", "--device", type=click.STRING, help="Use this device id.")
+@click.argument("text")
+@click.pass_context
+def input_text(ctx, device, text):
+    """Input the text."""
+    if device is None:
+        device = Config.read_value(Config.SECTION_DEVICE,
+                                   Config.KEY_DEFAULT)
+    Adb.input_text(device, text)
