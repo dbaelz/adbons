@@ -15,7 +15,7 @@ from ..config import Config
               help="Clear the default value.")
 @click.pass_context
 def config(ctx, use_global, set_device, set_app, clear):
-    """"Configurate adbons."""
+    """Configurates adbons."""
     if set_device:
         Config.write_value(use_global, Config.SECTION_DEVICE,
                            Config.KEY_DEFAULT, set_device)

@@ -10,13 +10,13 @@ from ..config import Config
 @click.argument("command", nargs=-1)
 @click.pass_context
 def adb_command(ctx, command):
-    """Executes the adb give command."""
+    """Executes the adb command."""
     Adb.adb_command(command)
 
 
 @click.command("devices")
 def list_devices():
-    """List all attached devices."""
+    """Lists all attached devices."""
     Adb.list_devices()
 
 
@@ -25,7 +25,7 @@ def list_devices():
 @click.option("-a", "--app", type=click.STRING, help="Use this app id.")
 @click.pass_context
 def kill(ctx, device, app):
-    """Kill (force-stop) an app."""
+    """Kills (force-stop) the app."""
     if device is None:
         device = Config.read_value(Config.SECTION_DEVICE,
                                    Config.KEY_DEFAULT)
@@ -41,7 +41,7 @@ def kill(ctx, device, app):
 @click.option("-d", "--device", type=click.STRING, help="Use this device id.")
 @click.pass_context
 def kill_all(ctx, device):
-    """Kill all background processes."""
+    """Kills all background processes."""
     if device is None:
         device = Config.read_value(Config.SECTION_DEVICE,
                                    Config.KEY_DEFAULT)
@@ -53,7 +53,7 @@ def kill_all(ctx, device):
 @click.option("-a", "--app", type=click.STRING, help="Use this app id.")
 @click.pass_context
 def clear(ctx, device, app):
-    """Clear the app data."""
+    """Clears the app data."""
     if device is None:
         device = Config.read_value(Config.SECTION_DEVICE,
                                    Config.KEY_DEFAULT)
@@ -70,7 +70,7 @@ def clear(ctx, device, app):
 @click.argument("text")
 @click.pass_context
 def input_text(ctx, device, text):
-    """Input the text."""
+    """Inputs the text."""
     if device is None:
         device = Config.read_value(Config.SECTION_DEVICE,
                                    Config.KEY_DEFAULT)
