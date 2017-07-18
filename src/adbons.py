@@ -6,6 +6,7 @@ from .commands.adb_commands import (adb_command, list_devices, kill, kill_all,
 
 
 @click.group(invoke_without_command=True)
+@click.version_option()
 @click.pass_context
 def cli(ctx):
     """A wrapper for the adb tool. It's just adb on steroids."""
