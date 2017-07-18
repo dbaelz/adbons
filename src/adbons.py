@@ -2,7 +2,8 @@ import click
 
 from .commands.config_commands import config
 from .commands.adb_commands import (adb_command, list_devices, kill, kill_all,
-                                    clear, input_text, input_keyevent)
+                                    clear, input_text, input_keyevent,
+                                    screencap)
 
 
 @click.group(invoke_without_command=True)
@@ -24,3 +25,4 @@ cli.add_command(kill_all)
 cli.add_command(clear)
 cli.add_command(input_text)
 cli.add_command(input_keyevent)
+cli.add_command(screencap)
