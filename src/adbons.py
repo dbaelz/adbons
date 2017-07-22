@@ -6,7 +6,7 @@ from .commands.adb_commands import (adb_command, list_devices, kill, kill_all,
                                     screencap)
 
 
-@click.group(invoke_without_command=True)
+@click.group()
 @click.version_option()
 @click.pass_context
 def cli(ctx):
