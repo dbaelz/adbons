@@ -13,8 +13,10 @@ from ..config import Config
 @click.option("-c", "--clear",
               type=click.Choice([Config.SECTION_DEVICE, Config.SECTION_APP]),
               help="Clear the default value.")
+@click.option("-s", "--show", is_flag=True,
+              help="Show the set values.")
 @click.pass_context
-def config(ctx, use_global, set_device, set_app, clear):
+def config(ctx, use_global, set_device, set_app, clear, show):
     """Configurates adbons."""
     if set_device:
         Config.write_value(use_global, Config.SECTION_DEVICE,
@@ -24,3 +26,12 @@ def config(ctx, use_global, set_device, set_app, clear):
                            Config.KEY_DEFAULT, set_app)
     if clear:
         Config.clear_value(use_global, clear, Config.KEY_DEFAULT)
+    if show:
+        config = Config.read_values(use_global)
+        if config is None:
+            raise click.ClickException("No config file found.")
+        else:
+            for key, value in config.items():
+                if key is not None and value is not None:
+                    default = value[Config.KEY_DEFAULT] or "not set"
+                    click.echo("The default " + key + " is " + default)
