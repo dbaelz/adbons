@@ -11,6 +11,10 @@ class Config:
     __CONFIG_FILE_NAME = ".adbons.yml"
 
     @staticmethod
+    def read_values(use_global):
+        return Config.__read_value(use_global)
+
+    @staticmethod
     def read_value(section, key):
         if os.path.exists(Config.__filename(False)):
             # Check local file first
@@ -22,11 +26,16 @@ class Config:
             return Config.__read_value(True, section, key)
 
     @staticmethod
-    def __read_value(use_global, section, key):
+    def __read_value(use_global, section=None, key=None):
         try:
             with open(Config.__filename(use_global, False), 'r') as ymlfile:
                 config = yaml.safe_load(ymlfile)
-            return config[section][key]
+                if section is None:
+                    return config
+                elif key is None:
+                    return config[section]
+                else:
+                    return config[section][key]
         except:
             pass
 

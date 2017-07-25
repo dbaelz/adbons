@@ -86,3 +86,13 @@ def input_keyevent(ctx, device, keyevent):
     https://developer.android.com/reference/android/view/KeyEvent.html"""
     device = __get_id(device, Config.SECTION_DEVICE, Config.KEY_DEFAULT)
     Adb.input_keyevent(device, keyevent)
+
+
+@click.command()
+@click.option("-d", "--device", type=click.STRING, help="Use this device id.")
+@click.argument("output")
+@click.pass_context
+def screencap(ctx, device, output):
+    """Takes a screen capture and saves it into the output file."""
+    device = __get_id(device, Config.SECTION_DEVICE, Config.KEY_DEFAULT)
+    Adb.screencap(device, output)

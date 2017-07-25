@@ -17,6 +17,8 @@ class Adb:
     ADB_INPUT_SOURCE_TOUCHSCREEN = "touchscreen"
     ADB_INPUT_SOURCE_KEYBOARD = "keyboard"
 
+    ADB_COMMAND_SCREENCAP = ["exec-out", "screencap", "-p"]
+
     @staticmethod
     def __command(device, app, adb_command):
         command = [Adb.ADB_COMMAND]
@@ -80,3 +82,10 @@ class Adb:
         command.append("keyevent")
         command.append(keyevent)
         subprocess.run(Adb.__command(device, None, command))
+
+    @staticmethod
+    def screencap(device, output):
+        with open(output, 'w') as output_file:
+            subprocess.run(Adb.__command(device, None,
+                                         Adb.ADB_COMMAND_SCREENCAP),
+                           stdout=output_file)
