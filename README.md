@@ -37,6 +37,8 @@ A short introduction how to develop for adbons. If you have any questions feel f
 - Add your cool feature/bugfix/whatever
 - Create a [pull request](https://help.github.com/articles/creating-a-pull-request-from-a-fork/)
 
+### Testing
+There are some tests for the adbons commands. These tests are executed with `python -m unittest`. For information who to write unit tests see the Click documentation.
 
 ## License
 adbons is licensed under the [BSD License](https://github.com/dbaelz/adbons/blob/master/LICENSE).

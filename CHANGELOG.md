@@ -1,6 +1,18 @@
 # Changelog
 A wrapper for the [Android adb tool](https://developer.android.com/studio/command-line/adb.html). It's just adb on steroids.
 
+
+## 0.2.0 (2017-07-25)
+Add more features and tests
+
+#### Added
+- Show the help, when `adbons` is invoked without a command.
+- Print the current version with `adbons --version`.
+- Take a screen capture and saves it into a file with `adbons screencap <filename>`.
+- Show the set config values with `adbons config --show`.
+- Unit tests for the commands.
+
+
 ## 0.1.0 (2017-07-11)
 Add more features and internal restructuring.
 
