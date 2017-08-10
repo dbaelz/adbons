@@ -96,3 +96,14 @@ def screencap(ctx, device, output):
     """Takes a screen capture and saves it into the output file."""
     device = __get_id(device, Config.SECTION_DEVICE, Config.KEY_DEFAULT)
     Adb.screencap(device, output)
+
+
+@click.command()
+@click.option("-d", "--device", type=click.STRING, help="Use this device id.")
+@click.option("-u", "--utc", is_flag=True,
+              help="Use UTC instead of current timezone.")
+@click.pass_context
+def date(ctx, device, utc):
+    """Shows the current date."""
+    device = __get_id(device, Config.SECTION_DEVICE, Config.KEY_DEFAULT)
+    Adb.show_date(device, utc)

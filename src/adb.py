@@ -19,6 +19,8 @@ class Adb:
 
     ADB_COMMAND_SCREENCAP = ["exec-out", "screencap", "-p"]
 
+    ADB_COMMAND_DATE = ["shell", "date"]
+
     @staticmethod
     def __command(device, app, adb_command):
         command = [Adb.ADB_COMMAND]
@@ -89,3 +91,10 @@ class Adb:
             subprocess.run(Adb.__command(device, None,
                                          Adb.ADB_COMMAND_SCREENCAP),
                            stdout=output_file)
+
+    @staticmethod
+    def show_date(device, utc):
+        command = Adb.__command(device, None, Adb.ADB_COMMAND_DATE)
+        if utc:
+            command.append("-u")
+        subprocess.run(command)
