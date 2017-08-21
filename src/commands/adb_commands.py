@@ -12,9 +12,32 @@ def __get_id(option_id, section, key):
         return option_id
 
 
+def __get_device_id(ctx_params):
+    return __get_id(__resolve_option_device(ctx_params),
+                    Config.SECTION_DEVICE, Config.KEY_DEFAULT)
+
+
+def __resolve_option_device(ctx_params):
+    device = ctx_params["device"]
+    index = ctx_params["index"]
+    if device is not None and index is not None:
+        raise click.UsageError("Only one of the options "
+                               "--device or --index is allowed")
+    elif device is not None:
+        return device
+    elif index is not None:
+        devices = Adb.get_devices_as_list()
+        try:
+            return devices[index][0]
+        except IndexError:
+            return None
+
+
 def option_device(func):
     @click.option("-d", "--device", type=click.STRING,
                   help="Use this device id.")
+    @click.option("-i", "--index", type=click.INT,
+                  help="Use this device index.")
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
@@ -57,9 +80,9 @@ def list_devices():
 @option_device
 @option_app
 @click.pass_context
-def kill(ctx, device, app):
+def kill(ctx, device, index, app):
     """Kills (force-stop) the app."""
-    device = __get_id(device, Config.SECTION_DEVICE, Config.KEY_DEFAULT)
+    device = __get_device_id(ctx.params)
     app = __get_id(app, Config.SECTION_APP, Config.KEY_DEFAULT)
     if app is None:
         raise click.NoSuchOption("app", "app id is required.")
@@ -69,9 +92,9 @@ def kill(ctx, device, app):
 @click.command("kill-all")
 @option_device
 @click.pass_context
-def kill_all(ctx, device):
+def kill_all(ctx, device, index):
     """Kills all background processes."""
-    device = __get_id(device, Config.SECTION_DEVICE, Config.KEY_DEFAULT)
+    device = __get_device_id(ctx.params)
     Adb.kill_all(device)
 
 
@@ -79,9 +102,9 @@ def kill_all(ctx, device):
 @option_device
 @option_app
 @click.pass_context
-def clear(ctx, device, app):
+def clear(ctx, device, index, app):
     """Clears the app data."""
-    device = __get_id(device, Config.SECTION_DEVICE, Config.KEY_DEFAULT)
+    device = __get_device_id(ctx.params)
     app = __get_id(app, Config.SECTION_APP, Config.KEY_DEFAULT)
     if app is None:
         raise click.NoSuchOption("app", "app id is required.")
@@ -96,9 +119,9 @@ def clear(ctx, device, app):
               help="Use this input source.")
 @click.argument("text")
 @click.pass_context
-def input_text(ctx, device, source, text):
+def input_text(ctx, device, index, source, text):
     """Inputs the text."""
-    device = __get_id(device, Config.SECTION_DEVICE, Config.KEY_DEFAULT)
+    device = __get_device_id(ctx.params)
     Adb.input_text(device, source, text)
 
 
@@ -106,11 +129,11 @@ def input_text(ctx, device, source, text):
 @option_device
 @click.argument("keyevent")
 @click.pass_context
-def input_keyevent(ctx, device, keyevent):
+def input_keyevent(ctx, device, index, keyevent):
     """Inputs the keyevent (value or constant).
     See also
     https://developer.android.com/reference/android/view/KeyEvent.html"""
-    device = __get_id(device, Config.SECTION_DEVICE, Config.KEY_DEFAULT)
+    device = __get_device_id(ctx.params)
     Adb.input_keyevent(device, keyevent)
 
 
@@ -118,9 +141,9 @@ def input_keyevent(ctx, device, keyevent):
 @option_device
 @click.argument("output")
 @click.pass_context
-def screencap(ctx, device, output):
+def screencap(ctx, device, index, output):
     """Takes a screen capture and saves it into the output file."""
-    device = __get_id(device, Config.SECTION_DEVICE, Config.KEY_DEFAULT)
+    device = __get_device_id(ctx.params)
     Adb.screencap(device, output)
 
 
@@ -129,7 +152,7 @@ def screencap(ctx, device, output):
 @click.option("-u", "--utc", is_flag=True,
               help="Use UTC instead of current timezone.")
 @click.pass_context
-def date(ctx, device, utc):
+def date(ctx, device, index, utc):
     """Shows the current date."""
-    device = __get_id(device, Config.SECTION_DEVICE, Config.KEY_DEFAULT)
+    device = __get_device_id(ctx.params)
     Adb.show_date(device, utc)
