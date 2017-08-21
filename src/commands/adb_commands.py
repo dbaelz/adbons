@@ -1,4 +1,5 @@
 import click
+import functools
 
 from ..adb import Adb
 from ..config import Config
@@ -9,6 +10,23 @@ def __get_id(option_id, section, key):
         return Config.read_value(section, key)
     else:
         return option_id
+
+
+def option_device(func):
+    @click.option("-d", "--device", type=click.STRING,
+                  help="Use this device id.")
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+    return wrapper
+
+
+def option_app(func):
+    @click.option("-a", "--app", type=click.STRING, help="Use this app id.")
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+    return wrapper
 
 
 @click.command("adb", context_settings=dict(
@@ -36,8 +54,8 @@ def list_devices():
 
 
 @click.command()
-@click.option("-d", "--device", type=click.STRING, help="Use this device id.")
-@click.option("-a", "--app", type=click.STRING, help="Use this app id.")
+@option_device
+@option_app
 @click.pass_context
 def kill(ctx, device, app):
     """Kills (force-stop) the app."""
@@ -49,7 +67,7 @@ def kill(ctx, device, app):
 
 
 @click.command("kill-all")
-@click.option("-d", "--device", type=click.STRING, help="Use this device id.")
+@option_device
 @click.pass_context
 def kill_all(ctx, device):
     """Kills all background processes."""
@@ -58,8 +76,8 @@ def kill_all(ctx, device):
 
 
 @click.command()
-@click.option("-d", "--device", type=click.STRING, help="Use this device id.")
-@click.option("-a", "--app", type=click.STRING, help="Use this app id.")
+@option_device
+@option_app
 @click.pass_context
 def clear(ctx, device, app):
     """Clears the app data."""
@@ -71,7 +89,7 @@ def clear(ctx, device, app):
 
 
 @click.command("text")
-@click.option("-d", "--device", type=click.STRING, help="Use this device id.")
+@option_device
 @click.option("-s", "--source",
               type=click.Choice([Adb.ADB_INPUT_SOURCE_TOUCHSCREEN,
                                  Adb.ADB_INPUT_SOURCE_KEYBOARD]),
@@ -85,7 +103,7 @@ def input_text(ctx, device, source, text):
 
 
 @click.command("key")
-@click.option("-d", "--device", type=click.STRING, help="Use this device id.")
+@option_device
 @click.argument("keyevent")
 @click.pass_context
 def input_keyevent(ctx, device, keyevent):
@@ -97,7 +115,7 @@ def input_keyevent(ctx, device, keyevent):
 
 
 @click.command()
-@click.option("-d", "--device", type=click.STRING, help="Use this device id.")
+@option_device
 @click.argument("output")
 @click.pass_context
 def screencap(ctx, device, output):
@@ -107,7 +125,7 @@ def screencap(ctx, device, output):
 
 
 @click.command()
-@click.option("-d", "--device", type=click.STRING, help="Use this device id.")
+@option_device
 @click.option("-u", "--utc", is_flag=True,
               help="Use UTC instead of current timezone.")
 @click.pass_context
