@@ -17,7 +17,8 @@ class TestAdbons(TestCase):
         result = runner.invoke(adbons, ["devices"])
 
         assert result.exit_code == 0
-        mocked_run.assert_called_with(["adb", "devices"])
+        mocked_run.assert_called_with(["adb", "devices"], check=True,
+                                      stdout=mock.ANY)
 
     @patch.object(subprocess, "run", autospec=True)
     def test_command_kill(self, mocked_run):

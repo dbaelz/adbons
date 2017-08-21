@@ -24,7 +24,15 @@ def adb_command(ctx, command):
 @click.command("devices")
 def list_devices():
     """Lists all attached devices."""
-    Adb.list_devices()
+    devices = Adb.get_devices_as_list()
+    if not devices:
+        click.echo("No devices attached")
+    else:
+        click.echo("Attached devices:")
+        for index, item in enumerate(devices):
+            entry = "index: " + str(index) + "\tid: " + devices[index][0]
+            entry += "\tname: " + devices[index][1]
+            click.echo(entry)
 
 
 @click.command()

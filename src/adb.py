@@ -39,11 +39,7 @@ class Adb:
         subprocess.run(command)
 
     @staticmethod
-    def list_devices():
-        subprocess.run([Adb.ADB_COMMAND, Adb.ADB_COMMAND_DEVICES])
-
-    @staticmethod
-    def get_device_ids():
+    def get_devices_as_list():
         output = subprocess.run([Adb.ADB_COMMAND, Adb.ADB_COMMAND_DEVICES],
                                 check=True,
                                 stdout=subprocess.PIPE).stdout.decode(
@@ -51,10 +47,10 @@ class Adb:
         # Delete header text and empty last line
         del output[0]
         del output[len(output) - 1]
-        lines = []
+        devices = []
         for line in output:
-            lines.append(line.split("\t")[0].strip())
-        return lines
+            devices.append(line.split("\t"))
+        return devices
 
     @staticmethod
     def kill_app(device, app):
