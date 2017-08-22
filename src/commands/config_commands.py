@@ -33,5 +33,7 @@ def config(ctx, use_global, set_device, set_app, clear, show):
         else:
             for key, value in config.items():
                 if key is not None and value is not None:
-                    default = value[Config.KEY_DEFAULT] or "not set"
+                    default = "not set"
+                    if bool(value) and bool(value[Config.KEY_DEFAULT]):
+                        default = value[Config.KEY_DEFAULT]
                     click.echo("The default " + key + " is " + default)

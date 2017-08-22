@@ -17,7 +17,8 @@ class TestAdbons(TestCase):
         result = runner.invoke(adbons, ["devices"])
 
         assert result.exit_code == 0
-        mocked_run.assert_called_with(["adb", "devices"])
+        mocked_run.assert_called_with(["adb", "devices", "-l"], check=True,
+                                      stdout=mock.ANY)
 
     @patch.object(subprocess, "run", autospec=True)
     def test_command_kill(self, mocked_run):
@@ -68,6 +69,26 @@ class TestAdbons(TestCase):
             mocked_run.assert_called_with(["adb", "-s", "deviceId",
                                            "exec-out", "screencap",
                                            "-p"], stdout=mock.ANY)
+
+    @patch.object(subprocess, "run", autospec=True)
+    def test_command_date(self, mocked_run):
+        runner = CliRunner()
+        with runner.isolated_filesystem():
+            result = runner.invoke(adbons, ["date", "-d", "deviceId"])
+
+            assert result.exit_code == 0
+            mocked_run.assert_called_with(["adb", "-s", "deviceId",
+                                           "shell", "date"])
+
+    @patch.object(subprocess, "run", autospec=True)
+    def test_command_date_utc(self, mocked_run):
+        runner = CliRunner()
+        with runner.isolated_filesystem():
+            result = runner.invoke(adbons, ["date", "-u", "-d", "deviceId"])
+
+            assert result.exit_code == 0
+            mocked_run.assert_called_with(["adb", "-s", "deviceId",
+                                           "shell", "date", "-u"])
 
     def test_command_config_set_ids(self):
         runner = CliRunner()

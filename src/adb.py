@@ -3,7 +3,9 @@ import subprocess
 
 class Adb:
     ADB_COMMAND = "adb"
-    ADB_COMMAND_DEVICES = "devices"
+
+    # devices
+    ADB_COMMAND_DEVICES = ["devices", "-l"]
 
     # activity manager
     ADB_COMMAND_KILL = ["shell", "am", "force-stop"]
@@ -18,6 +20,8 @@ class Adb:
     ADB_INPUT_SOURCE_KEYBOARD = "keyboard"
 
     ADB_COMMAND_SCREENCAP = ["exec-out", "screencap", "-p"]
+
+    ADB_COMMAND_DATE = ["shell", "date"]
 
     @staticmethod
     def __command(device, app, adb_command):
@@ -37,22 +41,20 @@ class Adb:
         subprocess.run(command)
 
     @staticmethod
-    def list_devices():
-        subprocess.run([Adb.ADB_COMMAND, Adb.ADB_COMMAND_DEVICES])
-
-    @staticmethod
-    def get_device_ids():
-        output = subprocess.run([Adb.ADB_COMMAND, Adb.ADB_COMMAND_DEVICES],
+    def get_devices_as_list():
+        output = subprocess.run(Adb.__command(None, None,
+                                              Adb.ADB_COMMAND_DEVICES),
                                 check=True,
                                 stdout=subprocess.PIPE).stdout.decode(
                                     "utf-8").splitlines()
         # Delete header text and empty last line
         del output[0]
         del output[len(output) - 1]
-        lines = []
+        devices = []
         for line in output:
-            lines.append(line.split("\t")[0].strip())
-        return lines
+            entry = [item.strip() for item in line.split(" ", 1)]
+            devices.append(entry)
+        return devices
 
     @staticmethod
     def kill_app(device, app):
@@ -89,3 +91,10 @@ class Adb:
             subprocess.run(Adb.__command(device, None,
                                          Adb.ADB_COMMAND_SCREENCAP),
                            stdout=output_file)
+
+    @staticmethod
+    def show_date(device, utc):
+        command = Adb.__command(device, None, Adb.ADB_COMMAND_DATE)
+        if utc:
+            command.append("-u")
+        subprocess.run(command)
