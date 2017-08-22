@@ -3,7 +3,9 @@ import subprocess
 
 class Adb:
     ADB_COMMAND = "adb"
-    ADB_COMMAND_DEVICES = "devices"
+
+    # devices
+    ADB_COMMAND_DEVICES = ["devices", "-l"]
 
     # activity manager
     ADB_COMMAND_KILL = ["shell", "am", "force-stop"]
@@ -40,7 +42,8 @@ class Adb:
 
     @staticmethod
     def get_devices_as_list():
-        output = subprocess.run([Adb.ADB_COMMAND, Adb.ADB_COMMAND_DEVICES],
+        output = subprocess.run(Adb.__command(None, None,
+                                              Adb.ADB_COMMAND_DEVICES),
                                 check=True,
                                 stdout=subprocess.PIPE).stdout.decode(
                                     "utf-8").splitlines()
@@ -49,7 +52,8 @@ class Adb:
         del output[len(output) - 1]
         devices = []
         for line in output:
-            devices.append(line.split("\t"))
+            entry = [item.strip() for item in line.split(" ", 1)]
+            devices.append(entry)
         return devices
 
     @staticmethod
