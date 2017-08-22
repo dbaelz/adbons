@@ -1,6 +1,19 @@
 # Changelog
 A wrapper for the [Android adb tool](https://developer.android.com/studio/command-line/adb.html). It's just adb on steroids.
 
+## 0.3.0 (2017-08-23)
+Expand features and fix minor bugs
+
+#### Added
+- Show the current date with `adbons date`.
+- Select a device from the devices list with the `--index` option
+
+#### Changed
+- Show the index and a description when `adbons devices` is executed.
+
+#### Fixed
+- Fix an evaluation bug in `adbons config --show`.
+
 
 ## 0.2.0 (2017-07-25)
 Add more features and tests
