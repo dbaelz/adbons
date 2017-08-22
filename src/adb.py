@@ -3,7 +3,9 @@ import subprocess
 
 class Adb:
     ADB_COMMAND = "adb"
-    ADB_COMMAND_DEVICES = "devices"
+
+    # devices
+    ADB_COMMAND_DEVICES = ["devices", "-l"]
 
     # activity manager
     ADB_COMMAND_KILL = ["shell", "am", "force-stop"]
@@ -39,22 +41,20 @@ class Adb:
         subprocess.run(command)
 
     @staticmethod
-    def list_devices():
-        subprocess.run([Adb.ADB_COMMAND, Adb.ADB_COMMAND_DEVICES])
-
-    @staticmethod
-    def get_device_ids():
-        output = subprocess.run([Adb.ADB_COMMAND, Adb.ADB_COMMAND_DEVICES],
+    def get_devices_as_list():
+        output = subprocess.run(Adb.__command(None, None,
+                                              Adb.ADB_COMMAND_DEVICES),
                                 check=True,
                                 stdout=subprocess.PIPE).stdout.decode(
                                     "utf-8").splitlines()
         # Delete header text and empty last line
         del output[0]
         del output[len(output) - 1]
-        lines = []
+        devices = []
         for line in output:
-            lines.append(line.split("\t")[0].strip())
-        return lines
+            entry = [item.strip() for item in line.split(" ", 1)]
+            devices.append(entry)
+        return devices
 
     @staticmethod
     def kill_app(device, app):
