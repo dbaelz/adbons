@@ -13,24 +13,52 @@ def __get_id(option_id, section, key):
 
 
 def __get_device_id(ctx_params):
-    return __get_id(__resolve_option_device(ctx_params),
-                    Config.SECTION_DEVICE, Config.KEY_DEFAULT)
+    # The device id to select the device
+    device_id = None
+    # The attached devices
+    devices = Adb.get_devices_as_list()
 
+    # No device attached, so return None
+    if not devices:
+        return None
 
-def __resolve_option_device(ctx_params):
-    device = ctx_params["device"]
-    index = ctx_params["index"]
-    if device is not None and index is not None:
+    # First step: Resolve the options
+    device_param = ctx_params["device"]
+    index_param = ctx_params["index"]
+    if device_param is not None and index_param is not None:
         raise click.UsageError("Only one of the options "
                                "--device or --index is allowed")
-    elif device is not None:
-        return device
-    elif index is not None:
-        devices = Adb.get_devices_as_list()
+    elif device_param is not None:
+        # Return the device param
+        device_id = device_param
+    elif index_param is not None:
+        # Read the device id with the index
         try:
-            return devices[index][0]
+            device_id = devices[index_param][0]
         except IndexError:
-            return None
+            device_id = None
+
+    # Second/Third step: When no suitable option is provided,
+    # then read the local and global config
+    if device_id is None:
+        device_id = Config.read_value(Config.SECTION_DEVICE,
+                                      Config.KEY_DEFAULT)
+
+    if device_id is not None:
+        # Check if the device with this device id is attached
+        for attached_device in devices:
+            # The device id is the first element
+            if attached_device[0] == device_id:
+                return device_id
+
+    # Fourth step: When only one device is attached,
+    # then select this device.
+    if len(devices) == 1:
+        # Only one device exists. So return the device id of this device
+        return devices[0][0]
+    else:
+        # Multiple devices attached, so we can't select one
+        return None
 
 
 def option_device(func):
