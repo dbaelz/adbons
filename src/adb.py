@@ -52,6 +52,11 @@ class Adb:
         del output[len(output) - 1]
         devices = []
         for line in output:
+            # Ignore additional output starting with an asterik.
+            # Example: "* daemon not running. starting it now at tcp:5037 *"
+            if line.startswith("*"):
+                continue
+
             entry = [item.strip() for item in line.split(" ", 1)]
             devices.append(entry)
         return devices
