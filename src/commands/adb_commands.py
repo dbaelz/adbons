@@ -12,53 +12,58 @@ def __get_id(option_id, section, key):
         return option_id
 
 
-def __get_device_id(ctx_params):
-    # The device id to select the device
-    device_id = None
-    # The attached devices
+def __determine_device_id(ctx_params):
+    # All attached devices
     devices = Adb.get_devices_as_list()
 
-    # No device attached, so return None
     if not devices:
-        return None
+        raise click.ClickException("No devices attached")
 
-    # First step: Resolve the options
     device_param = ctx_params["device"]
     index_param = ctx_params["index"]
     if device_param is not None and index_param is not None:
-        raise click.UsageError("Only one of the options "
-                               "--device or --index is allowed")
+        # Only one of the two options can be passed
+        raise click.BadOptionUsage(
+            "Only one of the options '--device' or '--index' is allowed")
+
     elif device_param is not None:
-        # Return the device param
-        device_id = device_param
+        # Only return the device id when the device is attached
+        if __is_device_id_attached(devices, device_param):
+            return device_param
+        else:
+            raise click.ClickException(
+                "The device '%s' isn't attached" % device_param)
+
     elif index_param is not None:
-        # Read the device id with the index
+        # Get the device id from the index
+        # Only return the device id when the device is attached
         try:
-            device_id = devices[index_param][0]
+            return devices[index_param][0]
         except IndexError:
-            device_id = None
+            raise click.ClickException(
+                "No device with the index '%s' available" % index_param)
 
-    # Second/Third step: When no suitable option is provided,
-    # then read the local and global config
-    if device_id is None:
-        device_id = Config.read_value(Config.SECTION_DEVICE,
-                                      Config.KEY_DEFAULT)
+    # When no option is provided, then read the local and global config
+    device_id = Config.read_value(Config.SECTION_DEVICE,
+                                  Config.KEY_DEFAULT)
 
-    if device_id is not None:
-        # Check if the device with this device id is attached
-        for attached_device in devices:
-            # The device id is the first element
-            if attached_device[0] == device_id:
-                return device_id
+    if device_id and __is_device_id_attached(devices, device_id):
+        # Only return the device id when the device is attached
+        return device_id
 
-    # Fourth step: When only one device is attached,
-    # then select this device.
     if len(devices) == 1:
-        # Only one device exists. So return the device id of this device
+        # Last resort: Return the only attached device
         return devices[0][0]
     else:
-        # Multiple devices attached, so we can't select one
-        return None
+        raise click.ClickException("Can't determine the best matching device")
+
+
+def __is_device_id_attached(devices, device_id):
+    for attached_device in devices:
+        # The device id is the first element
+        if attached_device[0] == device_id:
+            return True
+    return False
 
 
 def option_device(func):
@@ -110,7 +115,7 @@ def list_devices():
 @click.pass_context
 def kill(ctx, device, index, app):
     """Kills (force-stop) the app."""
-    device = __get_device_id(ctx.params)
+    device = __determine_device_id(ctx.params)
     app = __get_id(app, Config.SECTION_APP, Config.KEY_DEFAULT)
     if app is None:
         raise click.NoSuchOption("app", "app id is required.")
@@ -122,7 +127,7 @@ def kill(ctx, device, index, app):
 @click.pass_context
 def kill_all(ctx, device, index):
     """Kills all background processes."""
-    device = __get_device_id(ctx.params)
+    device = __determine_device_id(ctx.params)
     Adb.kill_all(device)
 
 
@@ -132,7 +137,7 @@ def kill_all(ctx, device, index):
 @click.pass_context
 def clear(ctx, device, index, app):
     """Clears the app data."""
-    device = __get_device_id(ctx.params)
+    device = __determine_device_id(ctx.params)
     app = __get_id(app, Config.SECTION_APP, Config.KEY_DEFAULT)
     if app is None:
         raise click.NoSuchOption("app", "app id is required.")
@@ -149,7 +154,7 @@ def clear(ctx, device, index, app):
 @click.pass_context
 def input_text(ctx, device, index, source, text):
     """Inputs the text."""
-    device = __get_device_id(ctx.params)
+    device = __determine_device_id(ctx.params)
     Adb.input_text(device, source, text)
 
 
@@ -161,7 +166,7 @@ def input_keyevent(ctx, device, index, keyevent):
     """Inputs the keyevent (value or constant).
     See also
     https://developer.android.com/reference/android/view/KeyEvent.html"""
-    device = __get_device_id(ctx.params)
+    device = __determine_device_id(ctx.params)
     Adb.input_keyevent(device, keyevent)
 
 
@@ -171,7 +176,7 @@ def input_keyevent(ctx, device, index, keyevent):
 @click.pass_context
 def screencap(ctx, device, index, output):
     """Takes a screen capture and saves it into the output file."""
-    device = __get_device_id(ctx.params)
+    device = __determine_device_id(ctx.params)
     Adb.screencap(device, output)
 
 
@@ -182,5 +187,5 @@ def screencap(ctx, device, index, output):
 @click.pass_context
 def date(ctx, device, index, utc):
     """Shows the current date."""
-    device = __get_device_id(ctx.params)
+    device = __determine_device_id(ctx.params)
     Adb.show_date(device, utc)
