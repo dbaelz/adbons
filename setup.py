@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="adbons",
-    version="0.4.0",
+    version="0.5.0",
     author="Daniel Bälz",
     author_email="me@dbaelz.de",
     description="""A wrapper for the Android adb tool.
