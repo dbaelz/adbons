@@ -3,7 +3,7 @@ import click
 from .commands.config_commands import config
 from .commands.adb_commands import (adb_command, list_devices, kill, kill_all,
                                     clear, input_text, input_keyevent,
-                                    screencap, date, device_info)
+                                    screencap, date, device_info, reboot)
 
 
 @click.group()
@@ -29,3 +29,4 @@ cli.add_command(input_keyevent)
 cli.add_command(screencap)
 cli.add_command(date)
 cli.add_command(device_info)
+cli.add_command(reboot)

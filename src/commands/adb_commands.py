@@ -203,3 +203,15 @@ def device_info(ctx, device, index, list_all):
         click.echo("Device properties:")
         for key, value in properties.items():
             click.echo("{} -> {}".format(key, value))
+
+
+@click.command()
+@option_device
+@click.option("-t", "--target",
+              type=click.Choice(Adb.ADB_REBOOT_TARGETS),
+              help="Target image for the reboot.")
+@click.pass_context
+def reboot(ctx, device, index, target):
+    """Reboots the device."""
+    device = __determine_device_id(ctx.params)
+    Adb.reboot(device, target)

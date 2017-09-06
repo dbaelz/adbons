@@ -26,6 +26,10 @@ class Adb:
 
     ADB_COMMAND_GETPROP = ["shell", "getprop"]
 
+    ADB_COMMAND_REBOOT = ["reboot"]
+    ADB_REBOOT_TARGETS = ["system", "bootloader", "recovery", "sideload",
+                          "sideload-auto-reboot"]
+
     DEVICE_INFO_PROPERTIES_LIST = ["ro.product.brand",
                                    "ro.product.model",
                                    "ro.build.version.release"]
@@ -125,3 +129,10 @@ class Adb:
                 if (list_all or (pair[0] in Adb.DEVICE_INFO_PROPERTIES_LIST)):
                     result[pair[0]] = pair[1]
         return result
+
+    @staticmethod
+    def reboot(device, target):
+        command = Adb.ADB_COMMAND_REBOOT
+        if target:
+            command.append(target)
+        subprocess.run(Adb.__command(device, None, command))

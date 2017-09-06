@@ -118,6 +118,16 @@ class TestAdbons(TestCase):
                                           check=True,
                                           stdout=mock.ANY)
 
+    @mock.patch("src.adb.Adb.get_devices_as_list")
+    @patch.object(subprocess, "run", autospec=True)
+    def test_command_reboot(self, mocked_run, mocked_devices_list):
+        mocked_devices_list.return_value = [["deviceId", "Test Device"]]
+        runner = CliRunner()
+        result = runner.invoke(adbons, ["reboot", "-d", "deviceId"])
+
+        assert result.exit_code == 0
+        mocked_run.assert_called_with(["adb", "-s", "deviceId", "reboot"])
+
     def test_command_config_set_ids(self):
         runner = CliRunner()
         with runner.isolated_filesystem():
