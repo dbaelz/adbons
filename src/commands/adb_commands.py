@@ -104,9 +104,8 @@ def list_devices():
     else:
         click.echo("Attached devices:")
         for index, item in enumerate(devices):
-            entry = "index -> " + str(index) + "\tid -> " + devices[index][0]
-            entry += "\tdescription -> " + devices[index][1]
-            click.echo(entry)
+            click.echo("index -> {}\tid -> {}\tdescription -> {}".format(
+                str(index), devices[index][0], devices[index][1]))
 
 
 @click.command()
