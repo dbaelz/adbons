@@ -1,3 +1,4 @@
+import re
 import subprocess
 
 
@@ -22,6 +23,16 @@ class Adb:
     ADB_COMMAND_SCREENCAP = ["exec-out", "screencap", "-p"]
 
     ADB_COMMAND_DATE = ["shell", "date"]
+
+    ADB_COMMAND_GETPROP = ["shell", "getprop"]
+
+    ADB_COMMAND_REBOOT = ["reboot"]
+    ADB_REBOOT_TARGETS = ["system", "bootloader", "recovery", "sideload",
+                          "sideload-auto-reboot"]
+
+    DEVICE_INFO_PROPERTIES_LIST = ["ro.product.brand",
+                                   "ro.product.model",
+                                   "ro.build.version.release"]
 
     @staticmethod
     def __command(device, app, adb_command):
@@ -52,6 +63,11 @@ class Adb:
         del output[len(output) - 1]
         devices = []
         for line in output:
+            # Ignore additional output starting with an asterik.
+            # Example: "* daemon not running. starting it now at tcp:5037 *"
+            if line.startswith("*"):
+                continue
+
             entry = [item.strip() for item in line.split(" ", 1)]
             devices.append(entry)
         return devices
@@ -98,3 +114,25 @@ class Adb:
         if utc:
             command.append("-u")
         subprocess.run(command)
+
+    @staticmethod
+    def device_info(device, list_all):
+        output = subprocess.run(Adb.__command(device, None,
+                                              Adb.ADB_COMMAND_GETPROP),
+                                check=True,
+                                stdout=subprocess.PIPE).stdout.decode(
+                                    "utf-8").splitlines()
+        result = {}
+        for entry in output:
+            pair = re.findall(r'\[(.*?)\]', entry)
+            if (len(pair) == 2 and pair[0] and pair[1]):
+                if (list_all or (pair[0] in Adb.DEVICE_INFO_PROPERTIES_LIST)):
+                    result[pair[0]] = pair[1]
+        return result
+
+    @staticmethod
+    def reboot(device, target):
+        command = Adb.ADB_COMMAND_REBOOT
+        if target:
+            command.append(target)
+        subprocess.run(Adb.__command(device, None, command))

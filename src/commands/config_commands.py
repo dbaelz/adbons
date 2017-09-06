@@ -31,6 +31,7 @@ def config(ctx, use_global, set_device, set_app, clear, show):
         if config is None:
             raise click.ClickException("No config file found.")
         else:
+            click.echo("%s config:" % ("Global" if use_global else "Local"))
             for key, value in config.items():
                 if key is not None and value is not None:
                     default = "not set"
