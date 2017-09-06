@@ -104,6 +104,20 @@ class TestAdbons(TestCase):
             mocked_run.assert_called_with(["adb", "-s", "deviceId",
                                            "shell", "date", "-u"])
 
+    @mock.patch("src.adb.Adb.get_devices_as_list")
+    @patch.object(subprocess, "run", autospec=True)
+    def test_command_device_info(self, mocked_run, mocked_devices_list):
+        mocked_devices_list.return_value = [["deviceId", "Test Device"]]
+        runner = CliRunner()
+        with runner.isolated_filesystem():
+            result = runner.invoke(adbons, ["device-info", "-d", "deviceId"])
+
+            assert result.exit_code == 0
+            mocked_run.assert_called_with(["adb", "-s", "deviceId",
+                                           "shell", "getprop"],
+                                          check=True,
+                                          stdout=mock.ANY)
+
     def test_command_config_set_ids(self):
         runner = CliRunner()
         with runner.isolated_filesystem():

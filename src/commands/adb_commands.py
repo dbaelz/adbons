@@ -105,7 +105,7 @@ def list_devices():
         click.echo("Attached devices:")
         for index, item in enumerate(devices):
             entry = "index -> " + str(index) + "\tid -> " + devices[index][0]
-            entry += "\t\tdescription -> " + devices[index][1]
+            entry += "\tdescription -> " + devices[index][1]
             click.echo(entry)
 
 
@@ -189,3 +189,18 @@ def date(ctx, device, index, utc):
     """Shows the current date."""
     device = __determine_device_id(ctx.params)
     Adb.show_date(device, utc)
+
+
+@click.command("device-info")
+@option_device
+@click.option("list_all", "--all", is_flag=True,
+              help="List all properties.")
+@click.pass_context
+def device_info(ctx, device, index, list_all):
+    """Shows device information."""
+    device = __determine_device_id(ctx.params)
+    properties = Adb.device_info(device, list_all)
+    if (properties):
+        click.echo("Device properties:")
+        for key, value in properties.items():
+            click.echo("{} -> {}".format(key, value))
