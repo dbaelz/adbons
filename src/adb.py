@@ -59,14 +59,11 @@ class Adb:
                                 check=True,
                                 stdout=subprocess.PIPE).stdout.decode(
                                     "utf-8").splitlines()
-        # Delete header text and empty last line
-        del output[0]
-        del output[len(output) - 1]
         devices = []
         for line in output:
-            # Ignore additional output starting with an asterik.
+            # Skip the header and any daemon messages starting with an asterisk.
             # Example: "* daemon not running. starting it now at tcp:5037 *"
-            if line.startswith("*"):
+            if not line or line.startswith("*") or line.startswith("List of devices"):
                 continue
             entry = [item.strip() for item in line.split(" ", 1)]
             devices.append(Device(id=entry[0], description=entry[1] if len(entry) > 1 else None))
